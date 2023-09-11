@@ -41,5 +41,6 @@ export interface RepositoryInterface<Entity> {
 }
 
 export interface RepositoryContextData {
-    Task: TaskRepository
+    Task: TaskRepository,
+    load: boolean
 }

@@ -5,14 +5,20 @@ import { RepositoryContextData } from "../interfaces/database/repository.interfa
 export const RepositoryContext = React.createContext<RepositoryContextData>({} as RepositoryContextData);
 
 export const RepositoryProvider = ({ children }: any) => {
-  const [Task, setTask] = React.useState(new TaskRepository())
+  const [Task] = React.useState(new TaskRepository())
+  const [load, setLoad] = React.useState<boolean>(true)
 
   React.useEffect(() => {
-    console.log("Task>", Task)
+    databaseInit()
   }, [])
 
+  const databaseInit = async () => {
+    await Task.init();
+    setLoad(false)
+  }
+
   return (
-    <RepositoryContext.Provider value={{ Task }}>
+    <RepositoryContext.Provider value={{ Task, load }}>
       {children}
     </RepositoryContext.Provider>
   );

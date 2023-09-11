@@ -187,7 +187,8 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         if (!this.tableName) throw new Error("Repository not initiated")
 
         const table = this.entity;
-        const columns = Object.keys(table);
+        const getTable = new table() as Object;
+        const columns = Object.keys(getTable);
         const primaryGenerates = getPrimaryGeneratedColumns(table)
 
         const values = columns.map((column) => {
