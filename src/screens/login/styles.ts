@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { BUTTON_PRIMARY, COLOR_PRIMARY, TEXT_PRIMARY } from '../../constants/colors.constant';
-import { STATUS_BAR_HEIGHT } from '../../constants/screen.constant';
+import { STATUS_BAR_HEIGHT, WINDOW_HEIGTH, WINDOW_WIDTH } from '../../constants/screen.constant';
 import { FontFamily } from '../../constants/fonts.constant';
 
 export default StyleSheet.create({
@@ -74,6 +74,23 @@ export default StyleSheet.create({
     },
     btnOutlineTxt: {
         color: TEXT_PRIMARY,
+        fontFamily: FontFamily.Poppins_Regular
+    },
+    modalContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "rgba(0,0,0,0.8)",
+        width: WINDOW_WIDTH,
+        height: WINDOW_HEIGTH
+    },
+    redirect: {
+        backgroundColor: COLOR_PRIMARY,
+        padding: 20,
+        borderRadius: 10
+    },
+    modalText: {
+        color: TEXT_PRIMARY,
+        marginBottom: 20,
         fontFamily: FontFamily.Poppins_Regular
     }
 });

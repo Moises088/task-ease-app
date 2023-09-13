@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, TouchableOpacity, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Image, TouchableOpacity, Text, ScrollView, KeyboardAvoidingView, Platform, Modal, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import styles from './styles';
 import CustomInput from '../../components/global/custom-input';
@@ -19,6 +19,12 @@ const LoginScreen: React.FC = () => {
     const defaultAlert = () => {
         alert("No momento apenas a função 'Entrar sem login', está válida")
     }
+
+    React.useEffect(() => {
+        setTimeout(() => {
+            loginWithoutAccount()
+        }, 300);
+    }, [])
 
     const handleGoogleLogin = () => { defaultAlert() };
 
@@ -100,6 +106,15 @@ const LoginScreen: React.FC = () => {
                         </View>
                     </View>
                 </ScrollView>
+
+                <Modal visible={true} transparent={true}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.redirect}>
+                            <Text style={styles.modalText}>Redirecionando...</Text>
+                            <ActivityIndicator size="small" color="#FFF" />
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </KeyboardAvoidingView>
     );
