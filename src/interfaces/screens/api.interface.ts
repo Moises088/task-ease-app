@@ -6,4 +6,7 @@ export interface ApiContextData {
     makeLocalRequest<T>(requestFunction: () => Promise<T>): Promise<{ data: T, statusCode: number }>;
     loading: boolean;
     statusCode?: number;
+    makeLocalStorageRequest<T>(requestFunction: () => Promise<T>): Promise<{ data: T }>;
+    setLanguage: React.Dispatch<React.SetStateAction<"pt-BR" | "en">>;
+    language: "pt-BR" | "en";
 }

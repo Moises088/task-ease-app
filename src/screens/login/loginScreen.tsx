@@ -7,22 +7,26 @@ import { isValidEmail, isValidPass } from '../../validations/email.validate';
 import CustomButton from '../../components/global/custom-button';
 import { AuthContext } from '../../contexts/auth.context';
 import { BUTTON_PRIMARY } from '../../constants/colors.constant';
+import { Language } from '../../services/language.service';
+import { ApiContext } from '../../contexts/api.context';
 
 const google = 'https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png'
 
 const LoginScreen: React.FC = () => {
 
     const { loginWithoutAccount } = React.useContext(AuthContext)
+    const { language } = React.useContext(ApiContext)
+
     const [email, setEmail] = React.useState<string>();
     const [password, setPassword] = React.useState<string>();
 
     const defaultAlert = () => {
-        alert("No momento apenas a função 'Entrar sem login', está válida")
+        alert(Language.translate("AlertLogin", language))
     }
 
     React.useEffect(() => {
         setTimeout(() => {
-            loginWithoutAccount()
+            loginWithoutAccount();
         }, 300);
     }, [])
 
@@ -45,7 +49,9 @@ const LoginScreen: React.FC = () => {
                 <ScrollView contentContainerStyle={styles.containerScrollContent} showsVerticalScrollIndicator={false}>
                     <View style={styles.centerContainer}>
                         <View style={styles.containerForm}>
-                            <Text style={styles.loginSubtitle}>Entrar com uma rede social</Text>
+                            <Text style={styles.loginSubtitle}>
+                                {Language.translate("LoginSocial", language)}
+                            </Text>
                             <View style={styles.containerSocialMedia}>
                                 <TouchableOpacity onPress={handleGoogleLogin}>
                                     <Image source={{ uri: google }} style={styles.loginIcon} />
@@ -62,7 +68,9 @@ const LoginScreen: React.FC = () => {
                             </View>
 
                             <View style={styles.divisor} />
-                            <Text style={styles.loginSubtitle}>Entrar com email</Text>
+                            <Text style={styles.loginSubtitle}>
+                                {Language.translate("LoginEmail", language)}
+                            </Text>
 
                             <View style={styles.label}>
                                 <Text style={styles.loginSubtitle}>E-mail</Text>
@@ -77,7 +85,9 @@ const LoginScreen: React.FC = () => {
                             />
 
                             <View style={styles.label}>
-                                <Text style={styles.loginSubtitle}>Senha</Text>
+                                <Text style={styles.loginSubtitle}>
+                                    {Language.translate("Password", language)}
+                                </Text>
                             </View>
                             <CustomInput
                                 isValid={isValidPass}
@@ -98,10 +108,14 @@ const LoginScreen: React.FC = () => {
                             </View>
 
                             <View style={styles.divisor} />
-                            <Text style={styles.loginSubtitle}>OU</Text>
+                            <Text style={styles.loginSubtitle}>
+                                {Language.translate("Or", language)}
+                            </Text>
 
                             <TouchableOpacity style={styles.btnOutline} onPress={loginWithoutAccount}>
-                                <Text style={styles.btnOutlineTxt}>Entrar sem login</Text>
+                                <Text style={styles.btnOutlineTxt}>
+                                    {Language.translate("LoginWithoutAccount", language)}
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -110,7 +124,9 @@ const LoginScreen: React.FC = () => {
                 <Modal visible={true} transparent={true}>
                     <View style={styles.modalContainer}>
                         <View style={styles.redirect}>
-                            <Text style={styles.modalText}>Redirecionando...</Text>
+                            <Text style={styles.modalText}>
+                                {Language.translate("Redirect", language)}...
+                            </Text>
                             <ActivityIndicator size="small" color="#FFF" />
                         </View>
                     </View>
