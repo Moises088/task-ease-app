@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { TaskRepository } from "../../database/repositories/task.repository";
 
 export type FindOptions<Entity> = {
@@ -38,8 +39,4 @@ export interface RepositoryInterface<Entity> {
      * @returns A Promise containing the number of rows affected by the deletion.
      */
     delete(id: number): Promise<{ rowsAffected: number } | undefined>;
-}
-
-export interface ApiContextData {
-    load: boolean
 }

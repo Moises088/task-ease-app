@@ -1,7 +1,10 @@
 import React from 'react';
+import AuthProvider from './src/contexts/auth.context';
+import ApiProvider from './src/contexts/api.context';
+import Routes from './src/routes/index.routes';
+import { View } from "react-native";
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { ApiProvider } from './src/contexts/api.context';
 import { COLOR_PRIMARY } from './src/constants/colors.constant';
 import { useFonts } from "expo-font";
 import { FontFamily } from './src/constants/fonts.constant';
@@ -18,19 +21,12 @@ export default function App() {
 
   return (
     <ApiProvider>
-      <View style={styles.container}>
-        <Text>Open up App.tsx to start working on your app!</Text>
-        <StatusBar style="light" backgroundColor={COLOR_PRIMARY} />
-      </View>
+      <AuthProvider>
+        <NavigationContainer>
+          <Routes />
+          <StatusBar backgroundColor={COLOR_PRIMARY} style='light' />
+        </NavigationContainer>
+      </AuthProvider>
     </ApiProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
