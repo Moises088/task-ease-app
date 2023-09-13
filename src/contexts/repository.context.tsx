@@ -1,11 +1,10 @@
 import React from "react";
+import { ApiContextData } from "../interfaces/database/repository.interface";
 import { TaskRepository } from "../database/repositories/task.repository";
-import { RepositoryContextData } from "../interfaces/database/repository.interface";
 
-export const RepositoryContext = React.createContext<RepositoryContextData>({} as RepositoryContextData);
+export const ApiContext = React.createContext<ApiContextData>({} as ApiContextData);
 
-export const RepositoryProvider = ({ children }: any) => {
-  const [Task] = React.useState(new TaskRepository())
+export const ApiProvider = ({ children }: any) => {
   const [load, setLoad] = React.useState<boolean>(true)
 
   React.useEffect(() => {
@@ -13,13 +12,13 @@ export const RepositoryProvider = ({ children }: any) => {
   }, [])
 
   const databaseInit = async () => {
-    await Task.init();
+    await new TaskRepository().init();
     setLoad(false)
   }
 
   return (
-    <RepositoryContext.Provider value={{ Task, load }}>
+    <ApiContext.Provider value={{ load }}>
       {children}
-    </RepositoryContext.Provider>
+    </ApiContext.Provider>
   );
 };

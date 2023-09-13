@@ -40,7 +40,6 @@ export interface RepositoryInterface<Entity> {
     delete(id: number): Promise<{ rowsAffected: number } | undefined>;
 }
 
-export interface RepositoryContextData {
-    Task: TaskRepository,
+export interface ApiContextData {
     load: boolean
 }

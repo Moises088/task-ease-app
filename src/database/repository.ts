@@ -12,13 +12,14 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
 
     constructor(entity: new () => Entity) {
         this.entity = entity;
+        const tableName = entity.name.replace("Entity", "").toLowerCase();
+        this.tableName = tableName;
     }
 
     async init(): Promise<void> {
-        const tableName = this.entity.name.replace("Entity", "").toLowerCase();
-        this.tableName = tableName;
-
         if (this.exists) return
+
+        const tableName = this.tableName;
 
         const columns = getColumns(this.entity)
         const primaryGenerates = getPrimaryGeneratedColumns(this.entity);
