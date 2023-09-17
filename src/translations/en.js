@@ -17,4 +17,5 @@ export default {
     TaskDesire: "List of<br>desire",
     TaskTravel: "List of<br>travel",
     TaskGift: "List of<br>gift",
+    Title: "Title",
 }

@@ -38,7 +38,12 @@ const HomeScreen: React.FC = () => {
                 <FlatList
                     data={HOME_CREATE}
                     renderItem={({ item }) =>
-                        <HomeCreateIcon item={item} />
+                        <HomeCreateIcon
+                            item={item}
+                            click={() => {
+                                navigation.navigate("CreateScreen", { action: item.action })
+                            }}
+                        />
                     }
                     horizontal
                     showsHorizontalScrollIndicator={false}

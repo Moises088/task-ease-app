@@ -5,13 +5,14 @@ import styles from './styles';
 import { ApiContext } from '../../../contexts/api.context';
 import { Language } from '../../../services/language.service';
 
-const HomeCreateIcon: React.FC<{ item: HomeCreate }> = ({ item }) => {
+const HomeCreateIcon: React.FC<{ item: HomeCreate, click: () => void; }> = ({ item, click }) => {
     const { language } = React.useContext(ApiContext)
 
     return (
         <TouchableOpacity
             activeOpacity={0.6}
             style={styles.button}
+            onPress={click}
         >
             <View style={[styles.container, { backgroundColor: item.backgroundColor }]}>
                 {item.icon()}

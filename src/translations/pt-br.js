@@ -17,4 +17,5 @@ export default {
     TaskDesire: "Lista de<br>desejos",
     TaskTravel: "Lista de<br>viagem",
     TaskGift: "Lista de<br>presente",
+    Title: "Titulo",
 }
