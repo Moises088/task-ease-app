@@ -49,7 +49,6 @@ class LanguageCls {
     public translate(key: string, active: "pt-BR" | "en"): string {
         this.i18n.locale = active;
         return this.i18n.t(key)
-        // return ""
     }
 }
 

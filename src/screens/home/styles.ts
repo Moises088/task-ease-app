@@ -26,5 +26,8 @@ export default StyleSheet.create({
     },
     containerHeaderBtn: {
         marginLeft: 10
-    }
+    },
+    containerCreate: {
+        marginTop: 60
+    },
 })

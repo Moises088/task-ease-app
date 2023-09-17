@@ -8,5 +8,13 @@ export default {
     Or: "Or",
     LoginWithoutAccount: "Log in without an account",
     Redirect: "Redirecting",
-    AlertLogin: "Currently, only the 'Log in without an account' function is available"
+    AlertLogin: "Currently, only the 'Log in without an account' function is available",
+    TaskCreate: "Create",
+    TaskTask: "Tasks",
+    TaskBook: "List of<br>books",
+    TaskShopping: "List of<br>shopping",
+    TaskMovie: "List of<br>movie",
+    TaskDesire: "List of<br>desire",
+    TaskTravel: "List of<br>travel",
+    TaskGift: "List of<br>gift",
 }

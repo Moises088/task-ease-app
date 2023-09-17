@@ -25,6 +25,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ title, click, style, icon, 
     }
 
     React.useEffect(() => {
+        console.log("loading")
         if (loading) {
             if (buttonRef.current) {
                 buttonRef.current.measure((x, y, width, height, pageX, pageY) => {

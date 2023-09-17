@@ -8,6 +8,8 @@ import { RootStackParamList } from '../../interfaces/screens/route.interface';
 import styles from './styles';
 import { Language } from '../../services/language.service';
 import { ApiContext } from '../../contexts/api.context';
+import HomeCreateIcon from '../../components/home/create-icon';
+import { HOME_CREATE } from '../../constants/home.constant';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'HomeScreen'>;
 
@@ -30,6 +32,18 @@ const HomeScreen: React.FC = () => {
                         <AntDesign name="setting" size={20} color={TEXT_PRIMARY} />
                     </TouchableOpacity>
                 </View>
+            </View>
+
+            <View style={styles.containerCreate}>
+                <FlatList
+                    data={HOME_CREATE}
+                    renderItem={({ item }) =>
+                        <HomeCreateIcon item={item} />
+                    }
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={(_, index) => index.toString()}
+                />
             </View>
         </View >
     );
