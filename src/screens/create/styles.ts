@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { COLOR_PRIMARY, MODAL_PRIMARY, TEXT_PRIMARY } from "../../constants/colors.constant";
 import { FontFamily } from "../../constants/fonts.constant";
-import { STATUS_BAR_HEIGHT } from "../../constants/screen.constant";
+import { STATUS_BAR_HEIGHT, WINDOW_HEIGTH, WINDOW_WIDTH } from "../../constants/screen.constant";
 
 export default StyleSheet.create({
     container: {
@@ -55,11 +55,6 @@ export default StyleSheet.create({
         fontSize: 17,
         marginLeft: 3
     },
-    modal: {
-        backgroundColor: MODAL_PRIMARY,
-        padding: 15,
-        paddingTop: 40,
-    },
     image: {
         width: "100%",
         height: 150,
@@ -84,5 +79,34 @@ export default StyleSheet.create({
         fontFamily: FontFamily.Poppins_Regular,
         fontSize: 13,
         marginLeft: 2
+    },
+    coverModal: {
+        width: WINDOW_WIDTH,
+        height: WINDOW_HEIGTH,
+        backgroundColor: "rgba(0,0,0,0.7)",
+    },
+    containerModal: {
+        width: WINDOW_WIDTH,
+        height: WINDOW_HEIGTH - 80,
+        backgroundColor: MODAL_PRIMARY,
+        position: "absolute",
+        bottom: 0,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingHorizontal: 20
+    },
+    containerModalHeader: {
+        alignItems: "flex-end",
+        marginTop: 15,
+        paddingBottom: 5
+    },
+    containerModalHeaderBtn: {
+        borderWidth: 1,
+        borderColor: TEXT_PRIMARY,
+        width: 20,
+        height: 20,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 14
     }
 })
