@@ -1,6 +1,6 @@
 import { ColumnOptions, getColumns, getGenerateCreatedAt, getPrimaryGeneratedColumns } from "../decorators/database.decorator";
 import * as SQLite from 'expo-sqlite';
-import { FindOptions, RepositoryInterface } from "../interfaces/database/repository.interface";
+import { FindOptions, FindOrder, FindWhere, RepositoryInterface } from "../interfaces/database/repository.interface";
 import { DatabaseSettings } from "../constants/database";
 
 const db = SQLite.openDatabase(DatabaseSettings.name + '.db');
@@ -153,7 +153,7 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         return
     }
 
-    protected generateQueryWhere(params?: FindOptions<Entity>): { where: string, value: (string | number)[] } {
+    protected generateQueryWhere(params?: FindWhere<Entity>): { where: string, value: (string | number)[] } {
         if (!params) return { where: "", value: [] };
 
         const columnNames = []
@@ -172,12 +172,28 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         return { where: "where " + columnNames.join(" and "), value: values }
     }
 
-    public find(options?: { where?: FindOptions<Entity>, select?: Array<keyof Entity> }): Promise<Entity[]> {
+    protected generateQueryOrder(orders?: FindOrder<Entity>): string {
+        if (!orders) return "";
+
+        let orderBy = []
+
+        for (const key in orders) {
+            const order = orders[key];
+            orderBy.push(`${key} ${order}`);
+        }
+
+        return `ORDER BY ${orderBy.join(",")}`
+    }
+
+    public find(options?: FindOptions<Entity>): Promise<Entity[]> {
         if (!this.tableName) throw new Error("Repository not initiated")
 
         const find = this.generateQueryWhere(options?.where);
         const select = options?.select?.join(",") ?? "*";
-        const query = `SELECT ${select} FROM ${this.tableName} ${find.where};`;
+        const order = this.generateQueryOrder(options?.order);;
+        const query = `SELECT ${select} FROM ${this.tableName} ${find.where} ${order};`;
+
+        console.log(order)
 
         return new Promise((resolve, reject) => {
             db.transaction(tx => {
@@ -242,7 +258,7 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         })
     }
 
-    public async update(id: number, update: FindOptions<Entity>): Promise<{ rowsAffected: number } | undefined> {
+    public async update(id: number, update: FindWhere<Entity>): Promise<{ rowsAffected: number } | undefined> {
         if (!this.tableName) throw new Error("Repository not initiated")
 
         const table = this.entity as Function;

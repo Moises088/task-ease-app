@@ -1,7 +1,14 @@
-import { AxiosResponse } from "axios";
-import { TaskRepository } from "../../database/repositories/task.repository";
-
 export type FindOptions<Entity> = {
+    where?: FindWhere<Entity>,
+    select?: Array<keyof Entity>,
+    order?: FindOrder<Entity>
+}
+
+export type FindOrder<Entity> = {
+    [Key in keyof Entity]?: "ASC" | "DESC"
+
+}
+export type FindWhere<Entity> = {
     [Key in keyof Entity]?: Entity[Key]
 }
 
@@ -16,7 +23,7 @@ export interface RepositoryInterface<Entity> {
      * @param options Options for the query.
      * @returns A Promise containing an array of entities.
      */
-    find(options?: { where?: FindOptions<Entity>, select?: Array<keyof Entity> }): Promise<Entity[]>;
+    find(options?: { where?: FindWhere<Entity>, select?: Array<keyof Entity> }): Promise<Entity[]>;
 
     /**
      * Saves a new entity to the table.
@@ -31,7 +38,7 @@ export interface RepositoryInterface<Entity> {
      * @param update An object containing fields and values to be updated.
      * @returns A Promise containing the number of rows affected by the update.
      */
-    update(id: number, update: FindOptions<Entity>): Promise<{ rowsAffected: number } | undefined>;
+    update(id: number, update: FindWhere<Entity>): Promise<{ rowsAffected: number } | undefined>;
 
     /**
      * Deletes an entity from the table based on its ID.

@@ -1,6 +1,6 @@
 import { TaskEntity } from "../database/entities/task.entity";
 import { TaskRepository } from "../database/repositories/task.repository";
-import { FindOptions } from "../interfaces/database/repository.interface";
+import { FindOptions, FindWhere } from "../interfaces/database/repository.interface";
 
 class TaskCls {
 
@@ -12,7 +12,7 @@ class TaskCls {
         return this.ensureMinimumDelay<number | undefined>(startTime, 30, response);
     }
 
-    public async find(options?: { where?: FindOptions<TaskEntity>, select?: (keyof TaskEntity)[] }) {
+    public async find(options?: FindOptions<TaskEntity>) {
         console.log("options", options)
         const startTime = Date.now();
         const taskRepository = new TaskRepository()

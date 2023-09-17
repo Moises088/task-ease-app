@@ -25,7 +25,7 @@ const HomeScreen: React.FC = () => {
     }, [])
 
     const getTasks = async () => {
-        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find());
+        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find({ order: { id: "DESC" } }));
         if (findTasks?.length) setTasks(findTasks)
     }
 
