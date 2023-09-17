@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn } from "../../decorators/database.decorator";
+import { Column, GenerateCreatedAt, PrimaryGeneratedColumn } from "../../decorators/database.decorator";
 
 export class TaskEntity {
     @PrimaryGeneratedColumn()
@@ -12,4 +12,7 @@ export class TaskEntity {
 
     @Column({ type: "TEXT", default: "none" })
     type!: "none" | "task" | "book" | "shopping" | "movie" | "desire" | "travel" | "gift";
+
+    @GenerateCreatedAt()
+    createdAt?: number;
 }

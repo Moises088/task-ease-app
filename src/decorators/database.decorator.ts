@@ -33,3 +33,17 @@ export function Column(options: ColumnOptions): PropertyDecorator {
 export function getColumns(target: Object): Record<string, ColumnOptions> {
     return Reflect.getMetadata(columnsMetadataKey, target) || {};
 }
+
+const createdAtMetadataKey = Symbol('createdAt');
+
+export function GenerateCreatedAt(): PropertyDecorator {
+    return (target: Object, propertyKey: string | symbol) => {
+        const existingColumns = Reflect.getMetadata(createdAtMetadataKey, target.constructor) || [];
+        existingColumns.push(propertyKey);
+        Reflect.defineMetadata(createdAtMetadataKey, existingColumns, target.constructor);
+    };
+}
+
+export function getGenerateCreatedAt(target: Function): string[] {
+    return Reflect.getMetadata(createdAtMetadataKey, target) || [];
+}

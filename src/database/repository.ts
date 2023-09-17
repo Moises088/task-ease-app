@@ -1,4 +1,4 @@
-import { ColumnOptions, getColumns, getPrimaryGeneratedColumns } from "../decorators/database.decorator";
+import { ColumnOptions, getColumns, getGenerateCreatedAt, getPrimaryGeneratedColumns } from "../decorators/database.decorator";
 import * as SQLite from 'expo-sqlite';
 import { FindOptions, RepositoryInterface } from "../interfaces/database/repository.interface";
 import { DatabaseSettings } from "../constants/database";
@@ -23,6 +23,7 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
 
         const columns = getColumns(this.entity)
         const primaryGenerates = getPrimaryGeneratedColumns(this.entity);
+        const createdAtColumns = getGenerateCreatedAt(this.entity)
 
         const tableExist = await new Promise<boolean>((resolve, reject) => {
             db.transaction((tx) => {
@@ -47,7 +48,7 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         if (tableExist) return this.updateTable(tableName, this.entity)
 
         if (Object.keys(columns)?.length && primaryGenerates?.length) {
-            await this.createTable(primaryGenerates, columns, tableName, this.entity)
+            await this.createTable(primaryGenerates, columns, tableName, createdAtColumns)
         }
     }
 
@@ -59,12 +60,16 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         return defaultValue
     }
 
-    protected createTable(primaryGenerates: string[], columns: Record<string, ColumnOptions>, tableName: string, entity: new () => Entity) {
+    protected createTable(primaryGenerates: string[], columns: Record<string, ColumnOptions>, tableName: string, createdAtColumns: string[]) {
         const ids = [];
         const column = []
 
         for (const primaryGenerate of primaryGenerates) {
             ids.push(`${primaryGenerate} INTEGER PRIMARY KEY NOT NULL`)
+        }
+
+        for (const createdAtColumn of createdAtColumns) {
+            column.push(`${createdAtColumn} INTEGER DEFAULT NULL`)
         }
 
         for (const key in columns) {
@@ -106,8 +111,10 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         for (const key in entityObj) {
             entityColumns.push(key)
         }
+
         const missingElements = entityColumns.filter(item => !tableColumns.includes(item)) as string[];
         const columns = getColumns(entity)
+        const createdAtColumns = getGenerateCreatedAt(entity)
         const updateColumns: any[] = []
 
         for (const key in columns) {
@@ -115,6 +122,13 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
             const update = missingElements.includes(key)
             if (update) {
                 updateColumns.push(`ADD COLUMN ${key} ${column.type} DEFAULT ${this.getDefault(column.default, column.type)}`)
+            }
+        }
+
+        for (const createdAtColumn of createdAtColumns) {
+            const update = missingElements.includes(createdAtColumn)
+            if (update) {
+                updateColumns.push(`ADD COLUMN ${createdAtColumn} INTEGER DEFAULT NULL`)
             }
         }
 
@@ -184,17 +198,21 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
     }
 
     public async save(data: Entity): Promise<number | undefined> {
-        console.log("this.tableName", this.tableName)
         if (!this.tableName) throw new Error("Repository not initiated")
 
         const table = this.entity;
         const getTable = new table() as Object;
         const columns = Object.keys(getTable);
         const primaryGenerates = getPrimaryGeneratedColumns(table)
+        const generateCreatedAt = getGenerateCreatedAt(table)
 
         const values = columns.map((column) => {
             if (!primaryGenerates.includes(column)) {
                 const key = column as keyof Entity;
+
+                if (generateCreatedAt.includes(column)) {
+                    return { column: key, value: Date.now() };
+                }
                 return { column: key, value: data[key] };
             }
         }).filter(r => r?.value) as { column: string, value: (string | number) }[];

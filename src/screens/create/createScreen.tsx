@@ -14,6 +14,8 @@ import styles from './styles';
 import { Language } from '../../services/language.service';
 import { WALLPAPER_IMAGE, WallpaperImage } from '../../constants/image.constant';
 import CustomPickerImage from '../../components/global/custom-picker-image';
+import { Task } from '../../services/task.service';
+import { TaskEntity } from '../../database/entities/task.entity';
 
 type CreateScreenRouteProp = RouteProp<RootStackParamList, 'CreateScreen'>;
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CreateScreen'>;
@@ -24,6 +26,7 @@ const CreateScreen: React.FC = () => {
     const route = useRoute<CreateScreenRouteProp>();
     const action = route.params.action;
 
+    const [title, setTitle] = React.useState<string>();
     const [createType, setCreateType] = React.useState<HomeCreate>();
     const [coverModal, setCoverModal] = React.useState<boolean>(false);
     const [coverImage, setCoverImage] = React.useState<WallpaperImage>();
@@ -52,8 +55,19 @@ const CreateScreen: React.FC = () => {
         setTimeout(() => { inputRef?.current?.focus() }, 100);
     }
 
-    const create = () => {
-        makeLocalRequest(() => new Promise(resolve => setTimeout(resolve, 1000)))
+    const create = async () => {
+        if (!title) return;
+        if (!createType) return;
+
+        const body: TaskEntity = {
+            title,
+            type: createType.action
+        }
+
+        if (coverImage) body.coverId = coverImage.id;
+
+        const createTask = await makeLocalRequest(() => Task.create(body))
+        console.log("createTask", createTask)
     }
 
     return createType ? (
@@ -89,6 +103,7 @@ const CreateScreen: React.FC = () => {
                 placeholder={Language.translate("Title", language)}
                 placeholderTextColor="#8888"
                 style={styles.input}
+                onChangeText={text => setTitle(text)}
             />
 
             <View style={styles.containerBtn}>
