@@ -7,27 +7,10 @@ export default StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLOR_PRIMARY,
-        paddingTop: STATUS_BAR_HEIGHT + 30,
+        paddingTop: STATUS_BAR_HEIGHT,
         paddingHorizontal: 20
     },
-    containerHeader: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center"
-    },
-    containerHeaderText: {
-        fontFamily: FontFamily.Poppins_Bold,
-        color: TEXT_PRIMARY,
-        fontSize: 19
-    },
-    containerHeaderBtns: {
-        flexDirection: "row",
-        alignItems: "center"
-    },
-    containerHeaderBtn: {
-        marginLeft: 10
-    },
-    containerCreate: {
-        marginTop: 60
+    list: {
+        paddingTop: 30
     },
 })

@@ -1,55 +1,52 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
-import { TEXT_PRIMARY } from '../../constants/colors.constant';
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../interfaces/screens/route.interface';
-import styles from './styles';
 import { Language } from '../../services/language.service';
 import { ApiContext } from '../../contexts/api.context';
-import HomeCreateIcon from '../../components/home/create-icon';
-import { HOME_CREATE } from '../../constants/home.constant';
+import { Task } from '../../services/task.service';
+import { TaskEntity } from '../../database/entities/task.entity';
+import HomeTasks from '../../components/home/tasks';
+import styles from './styles';
+import HomeHeader from '../../components/home/header';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'HomeScreen'>;
 
 const HomeScreen: React.FC = () => {
 
     const navigation = useNavigation<HomeScreenNavigationProp>()
-    const { language } = React.useContext(ApiContext)
+    const { language, makeLocalStorageRequest } = React.useContext(ApiContext)
+
+    const [tasks, setTasks] = React.useState<TaskEntity[]>([])
+
+    React.useEffect(() => {
+        getTasks()
+    }, [])
+
+    const getTasks = async () => {
+        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find());
+        if (findTasks?.length) setTasks(findTasks)
+    }
 
     return (
         <View style={styles.container}>
-            <View style={styles.containerHeader}>
-                <Text style={styles.containerHeaderText}>{Language.translate("Welcome", language)}</Text>
+            <FlatList
+                style={styles.list}
+                ListHeaderComponent={<HomeHeader />}
+                ListFooterComponent={<View style={{ height: 100 }} />}
+                data={tasks}
+                renderItem={({ item }) =>
+                    <HomeTasks
+                        item={item}
+                        click={() => {
 
-                <View style={styles.containerHeaderBtns}>
-                    <TouchableOpacity style={[styles.containerHeaderBtn, { marginLeft: 0, marginRight: 6 }]}>
-                        <Ionicons name="notifications-outline" size={20} color={TEXT_PRIMARY} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.containerHeaderBtn} onPress={() => navigation.navigate("SettingsScreen")}>
-                        <AntDesign name="setting" size={20} color={TEXT_PRIMARY} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            <View style={styles.containerCreate}>
-                <FlatList
-                    data={HOME_CREATE}
-                    renderItem={({ item }) =>
-                        <HomeCreateIcon
-                            item={item}
-                            click={() => {
-                                navigation.navigate("CreateScreen", { action: item.action })
-                            }}
-                        />
-                    }
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    keyExtractor={(_, index) => index.toString()}
-                />
-            </View>
+                        }}
+                    />
+                }
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(_, index) => index.toString()}
+            />
         </View >
     );
 }

@@ -18,4 +18,5 @@ export default {
     TaskTravel: "Lista de<br>viagem",
     TaskGift: "Lista de<br>presente",
     Title: "Titulo",
+    YourList: "Sua lista",
 }

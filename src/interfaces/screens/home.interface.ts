@@ -3,5 +3,5 @@ export interface HomeCreate {
     icon: () => JSX.Element,
     backgroundColor: string,
     color: string,
-    action: "task" | "book" | "shopping" | "movie" | "desire" | "travel" | "gift",
+    action: "none" | "task" | "book" | "shopping" | "movie" | "desire" | "travel" | "gift",
 }

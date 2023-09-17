@@ -18,4 +18,5 @@ export default {
     TaskTravel: "List of<br>travel",
     TaskGift: "List of<br>gift",
     Title: "Title",
+    YourList: "Your list",
 }
