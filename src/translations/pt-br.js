@@ -19,4 +19,6 @@ export default {
     TaskGift: "Lista de<br>presente",
     Title: "Titulo",
     YourList: "Sua lista",
+    Saved: "saved",
+    EnterDescription: "Digite uma descrição",
 }

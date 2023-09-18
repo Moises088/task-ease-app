@@ -19,4 +19,7 @@ export default {
     TaskGift: "List of<br>gift",
     Title: "Title",
     YourList: "Your list",
+    Saved: "saved",
+    EnterDescription: "Enter a description",
+    
 }

@@ -40,7 +40,7 @@ const HomeScreen: React.FC = () => {
                     <HomeTasks
                         item={item}
                         click={() => {
-
+                            if (item.id) navigation.navigate("TaskScreen", { task: item })
                         }}
                     />
                 }

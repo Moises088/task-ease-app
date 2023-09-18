@@ -15,3 +15,7 @@ export const WALLPAPER_IMAGE: WallpaperImage[] = [
     { id: 9, image: require("../../assets/cover/wallpaper-universe.jpg") },
     { id: 10, image: require("../../assets/cover/walpaper-plane.jpg") },
 ]
+
+export const GetCoverImage = (id?: number) => {
+    return WALLPAPER_IMAGE.find(w => w.id == id)
+}
