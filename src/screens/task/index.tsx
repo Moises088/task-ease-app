@@ -3,7 +3,7 @@ import { View, Image, TextInput, TouchableWithoutFeedback, Keyboard, FlatList, K
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../interfaces/screens/route.interface';
 import { TEXT_SECOND } from '../../constants/colors.constant';
-import { GetCoverImage, WALLPAPER_IMAGE } from '../../constants/image.constant';
+import { GetCoverImage } from '../../constants/image.constant';
 import { Language } from '../../services/language.service';
 import { ApiContext } from '../../contexts/api.context';
 import { useNavigation } from "@react-navigation/native";
@@ -14,28 +14,59 @@ import TaskHeader from '../../components/task/header';
 import TaskOptions from '../../components/task/options';
 import { TaskItem } from '../../interfaces/screens/task.interface';
 import TaskItens from '../../components/task/item';
+import { Task } from '../../services/task.service';
+import { TaskItemEntity } from '../../database/entities/task-item.entity';
 
 type TaskScreenRouteProp = RouteProp<RootStackParamList, 'TaskScreen'>;
 type TaskScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TaskScreen'>;
 
 const TaskScreen: React.FC = () => {
     const route = useRoute<TaskScreenRouteProp>().params;
+
     const textInputRef = React.useRef<TextInput>(null);
     const flatListRef = React.useRef<FlatList>(null);
     const textInputRefs = React.useRef<TextInput[] | null[]>([]);
+
     const [activeOption, setActiveOption] = React.useState<"check" | "list" | "list-ol">("check");
-    const [itens, setItens] = React.useState<TaskItem[]>([defaultList, defaultList])
+    const [updateTimeout, setUpdateTimeout] = React.useState<NodeJS.Timeout | null>(null);
+    const [load, setLoad] = React.useState<boolean>(false)
+    const [itens, setItens] = React.useState<TaskItem[]>([]);
 
     const navigation = useNavigation<TaskScreenNavigationProp>();
 
-    const { language } = React.useContext(ApiContext)
+    const { language, makeLocalRequest } = React.useContext(ApiContext)
 
     React.useEffect(() => {
         getTaskItens()
     }, [])
 
     const getTaskItens = async () => {
-        console.log(GetCoverImage(route.task.coverId), WALLPAPER_IMAGE[0])
+        try {
+            if (!route.task.id) return
+
+            const taskId = route.task.id;
+
+            setLoad(true)
+            const { data: result } = await makeLocalRequest(() => Task.findItens(taskId))
+
+            if (!result?.length) {
+                setItens([defaultList])
+                return
+            }
+
+            const lastItem = itens[itens.length - 1];
+            console.log(lastItem, itens, itens[0])
+            if (!lastItem?.title?.length) {
+                setItens([...result, defaultList])
+                return
+            }
+
+            setItens([...result])
+        } catch (error) {
+
+        } finally {
+            setLoad(false)
+        }
     }
 
     const dismissKeyboard = () => {
@@ -45,10 +76,57 @@ const TaskScreen: React.FC = () => {
         }
     };
 
+    const updateTaskItensDebounced = (changedItens: TaskItem[]) => {
+        if (updateTimeout) {
+            clearTimeout(updateTimeout);
+        }
+
+        const timeout = setTimeout(() => {
+            updateTaskItens(changedItens);
+        }, 1200);
+
+        setUpdateTimeout(timeout);
+    };
+
+    const updateTaskItens = async (changedItens: TaskItem[]) => {
+        const modifiedItems: TaskItemEntity[] = [];
+        const createdItems: TaskItemEntity[] = [];
+
+        if (!route.task.id) return
+
+        const isEqual = (obj1: TaskItem, obj2: TaskItem) => {
+            return JSON.stringify(obj1) === JSON.stringify(obj2);
+        }
+
+        for (const changedItem of changedItens) {
+            if (changedItem.id) {
+                const correspondingItem1 = itens.find(item1 => item1.id === changedItem.id);
+                if (correspondingItem1 && !isEqual(correspondingItem1, changedItem)) {
+                    if (correspondingItem1.title.length) {
+                        modifiedItems.push({ ...changedItem, taskId: route.task.id });
+                    }
+                }
+            } else {
+                if (changedItem.title.length) {
+                    createdItems.push({ ...changedItem, taskId: route.task.id });
+                }
+            }
+        }
+
+        try {
+            setLoad(true)
+            const { data } = await makeLocalRequest(() => Task.syncItens(modifiedItems, createdItems))
+            await getTaskItens()
+        } catch (error) {
+
+        } finally {
+            setLoad(false)
+        }
+    }
+
     const Header = () => (
         <>
-            <TaskHeader route={route} />
-            <TaskOptions activeOption={activeOption} setActiveOption={setActiveOption} />
+            <TaskHeader route={route} load={load} />
             <View style={styles.containerBody}>
                 <TextInput
                     ref={textInputRef}
@@ -66,6 +144,7 @@ const TaskScreen: React.FC = () => {
                         </View>
                     )
                 }
+                <TaskOptions activeOption={activeOption} setActiveOption={setActiveOption} />
             </View>
         </>
     )
@@ -74,7 +153,7 @@ const TaskScreen: React.FC = () => {
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Comportamento de acordo com a plataforma
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             >
                 <View style={styles.container}>
                     <View style={{ marginTop: 30 }}>
@@ -88,7 +167,10 @@ const TaskScreen: React.FC = () => {
                                     index={index}
                                     item={item}
                                     itens={itens}
-                                    setItens={setItens}
+                                    setItens={changedItens => {
+                                        setItens(changedItens)
+                                        updateTaskItensDebounced(changedItens)
+                                    }}
                                     textInputRefs={textInputRefs}
                                 />
                             )}

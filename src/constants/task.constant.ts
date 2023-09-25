@@ -1,5 +1,7 @@
-export const defaultList = {
+import { TaskItem } from "../interfaces/screens/task.interface";
+
+export const defaultList: TaskItem = {
     type: "check",
     title: "",
-    check: false
+    checked: false
 }

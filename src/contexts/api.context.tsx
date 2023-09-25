@@ -4,6 +4,7 @@ import { AxiosResponse } from "axios";
 import { TaskRepository } from "../database/repositories/task.repository";
 import Spinner from 'react-native-loading-spinner-overlay'
 import { Language } from "../services/language.service";
+import { TaskItemRepository } from "../database/repositories/task-item.repository";
 
 export const ApiContext = createContext<ApiContextData>({} as ApiContextData);
 
@@ -21,6 +22,7 @@ export const ApiProvider = ({ children }: any) => {
 
   const databaseInit = async () => {
     await new TaskRepository().init();
+    await new TaskItemRepository().init();
     setLoad(false)
   }
 

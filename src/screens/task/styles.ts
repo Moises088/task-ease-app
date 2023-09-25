@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
-import { COLOR_PRIMARY, MODAL_PRIMARY, TEXT_PRIMARY, TEXT_SUCCESS } from "../../constants/colors.constant";
-import { FontFamily } from "../../constants/fonts.constant";
+import { COLOR_PRIMARY } from "../../constants/colors.constant";
 import { STATUS_BAR_HEIGHT } from "../../constants/screen.constant";
 
 export default StyleSheet.create({
@@ -21,6 +20,7 @@ export default StyleSheet.create({
         marginTop: 20
     },
     containerBody: {
-        marginTop: 30
+        marginTop: 30,
+        marginBottom: 20
     },
 })

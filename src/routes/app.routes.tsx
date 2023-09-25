@@ -10,7 +10,7 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const AppRoutes = () => {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator initialRouteName="HomeScreen">
             <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="CreateScreen" component={CreateScreen} options={{ headerShown: false }} />

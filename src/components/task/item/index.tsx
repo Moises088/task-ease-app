@@ -9,12 +9,12 @@ const TaskItens: React.FC<TaskItemProps> = ({ index, item, itens, setItens, text
     return (
         <View key={index} style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
             <BouncyCheckbox
-                isChecked={item.check}
+                isChecked={item.checked}
                 text=""
                 disableBuiltInState
                 onPress={() => {
                     const updatedItens = [...itens];
-                    updatedItens[index].check = !item.check;
+                    updatedItens[index].checked = !item.checked;
                     setItens(updatedItens);
                 }}
                 fillColor={BUTTON_PRIMARY}

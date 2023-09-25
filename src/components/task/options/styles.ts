@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native";
-import { MODAL_PRIMARY, TEXT_PRIMARY, TEXT_SUCCESS } from "../../../constants/colors.constant";
-import { FontFamily } from "../../../constants/fonts.constant";
+import { MODAL_PRIMARY } from "../../../constants/colors.constant";
 
 export default StyleSheet.create({
     options: {

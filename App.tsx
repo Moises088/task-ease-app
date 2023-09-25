@@ -2,7 +2,7 @@ import React from 'react';
 import AuthProvider from './src/contexts/auth.context';
 import ApiProvider from './src/contexts/api.context';
 import Routes from './src/routes/index.routes';
-import { View } from "react-native";
+import { LogBox, View } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { COLOR_PRIMARY } from './src/constants/colors.constant';
@@ -18,6 +18,8 @@ export default function App() {
   });
 
   if (!fontsLoaded) return <View />;
+
+  LogBox.ignoreLogs(['Sending']); // not found solution for problem: https://github.com/satya164/react-native-tab-view/issues/1258
 
   return (
     <ApiProvider>

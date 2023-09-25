@@ -14,7 +14,9 @@ export interface TaskItemProps {
 }
 
 export interface TaskItem {
-    check: boolean;
+    id?: number;
     title: string;
+    type: "check" | "list" | "list-ol";
+    checked?: boolean;
     description?: string;
 }

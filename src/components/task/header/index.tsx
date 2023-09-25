@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { ApiContext } from '../../../contexts/api.context';
 import { Language } from '../../../services/language.service';
@@ -13,7 +13,7 @@ import styles from './styles';
 
 type TaskScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TaskScreen'>;
 
-const TaskHeader: React.FC<{ route: Readonly<{ task: TaskEntity; }> }> = ({ route }) => {
+const TaskHeader: React.FC<{ route: { task: TaskEntity; }; load: boolean }> = ({ route, load }) => {
     const { language } = React.useContext(ApiContext)
     const navigation = useNavigation<TaskScreenNavigationProp>();
 
@@ -36,11 +36,19 @@ const TaskHeader: React.FC<{ route: Readonly<{ task: TaskEntity; }> }> = ({ rout
                 </View>
 
                 <TouchableOpacity style={styles.containerHeaderBtns} onPress={() => { }}>
-                    <Text style={styles.containerTextSave}>
-                        {Language.translate("Saved", language)}
-                    </Text>
+                    {!load && (
+                        <Text style={styles.containerTextSave}>
+                            {Language.translate("Saved", language)}
+                        </Text>
+                    )}
                     <View style={styles.containerHeaderBtn}>
-                        <AntDesign name="check" size={20} color={TEXT_SUCCESS} />
+                        {
+                            load ? (
+                                <ActivityIndicator size={'small'} />
+                            ) : (
+                                <AntDesign name="check" size={20} color={TEXT_SUCCESS} />
+                            )
+                        }
                     </View>
                 </TouchableOpacity>
             </View>
