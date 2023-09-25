@@ -21,7 +21,7 @@ const TaskHeader: React.FC<{ route: { task: TaskEntity; }; load: boolean }> = ({
         <View>
             <View style={styles.containerHeader}>
                 <View style={styles.containerTitle}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
                         <MaterialIcons name="keyboard-arrow-left" size={24} color={TEXT_SECOND} />
                     </TouchableOpacity>
 

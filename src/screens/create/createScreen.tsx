@@ -31,7 +31,7 @@ const CreateScreen: React.FC = () => {
     const [coverModal, setCoverModal] = React.useState<boolean>(false);
     const [coverImage, setCoverImage] = React.useState<WallpaperImage>();
 
-    const { makeLocalRequest, language } = React.useContext(ApiContext)
+    const { makeLocalRequest, makeLocalStorageRequest, language } = React.useContext(ApiContext)
 
     React.useEffect(() => {
         const create = HOME_CREATE.find(home => home.action == action)
@@ -52,7 +52,6 @@ const CreateScreen: React.FC = () => {
     const setCover = (item: WallpaperImage) => {
         setCoverImage(item)
         setCoverModal(false)
-        setTimeout(() => { inputRef?.current?.focus() }, 100);
     }
 
     const create = async () => {
@@ -66,8 +65,13 @@ const CreateScreen: React.FC = () => {
 
         if (coverImage) body.coverId = coverImage.id;
 
-        const createTask = await makeLocalRequest(() => Task.create(body))
-        console.log("createTask", createTask)
+        const { data: createTask } = await makeLocalRequest(() => Task.create(body));
+        const { data: task } = await makeLocalStorageRequest(() => Task.find({ where: { id: createTask } }))
+
+        inputRef?.current?.blur();
+
+        const [createdTask] = task;
+        if (createdTask) navigation.navigate("TaskScreen", { task: createdTask })
     }
 
     return createType ? (

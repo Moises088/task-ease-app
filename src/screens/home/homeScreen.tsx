@@ -1,9 +1,8 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, FlatList } from 'react-native';
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../interfaces/screens/route.interface';
-import { Language } from '../../services/language.service';
 import { ApiContext } from '../../contexts/api.context';
 import { Task } from '../../services/task.service';
 import { TaskEntity } from '../../database/entities/task.entity';
@@ -16,13 +15,15 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'HomeScr
 const HomeScreen: React.FC = () => {
 
     const navigation = useNavigation<HomeScreenNavigationProp>()
-    const { language, makeLocalStorageRequest } = React.useContext(ApiContext)
+    const { makeLocalStorageRequest } = React.useContext(ApiContext)
+
+    const isFocused = useIsFocused()
 
     const [tasks, setTasks] = React.useState<TaskEntity[]>([])
 
     React.useEffect(() => {
-        getTasks()
-    }, [])
+        if (isFocused) getTasks()
+    }, [isFocused])
 
     const getTasks = async () => {
         const { data: findTasks } = await makeLocalStorageRequest(() => Task.find({ order: { id: "DESC" } }));
