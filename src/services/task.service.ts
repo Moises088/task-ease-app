@@ -12,7 +12,7 @@ class TaskCls {
         const startTime = Date.now();
         const taskRepository = new TaskRepository();
         const response = await taskRepository.save(task);
-        return this.ensureMinimumDelay<number | undefined>(startTime, 30, response);
+        return this.ensureMinimumDelay<number | undefined>(startTime, 10, response);
     }
 
     public async find(options?: FindOptions<TaskEntity>) {
@@ -20,14 +20,14 @@ class TaskCls {
         const startTime = Date.now();
         const taskRepository = new TaskRepository()
         const response = await taskRepository.find(options);
-        return this.ensureMinimumDelay<TaskEntity[]>(startTime, 30, response);
+        return this.ensureMinimumDelay<TaskEntity[]>(startTime, 10, response);
     }
 
     public async findItens(id: number) {
         const startTime = Date.now();
         const taskItemRepository = new TaskItemRepository()
         const response = await taskItemRepository.find({ where: { taskId: id } });
-        return this.ensureMinimumDelay<TaskItemEntity[]>(startTime, 30, response);
+        return this.ensureMinimumDelay<TaskItemEntity[]>(startTime, 10, response);
     }
 
     public async syncItens(modifiedItems: TaskItemEntity[], createdItems: TaskItemEntity[]) {

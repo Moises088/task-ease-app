@@ -50,18 +50,11 @@ const TaskScreen: React.FC = () => {
             const { data: result } = await makeLocalRequest(() => Task.findItens(taskId))
 
             if (!result?.length) {
-                setItens([defaultList])
+                setItens([{ ...defaultList, type: activeOption }])
                 return
             }
 
-            const lastItem = itens[itens.length - 1];
-            console.log(lastItem, itens, itens[0])
-            if (!lastItem?.title?.length) {
-                setItens([...result, defaultList])
-                return
-            }
-
-            setItens([...result])
+            setItens([...result, { ...defaultList, type: activeOption }])
         } catch (error) {
 
         } finally {
@@ -100,8 +93,8 @@ const TaskScreen: React.FC = () => {
 
         for (const changedItem of changedItens) {
             if (changedItem.id) {
-                const correspondingItem1 = itens.find(item1 => item1.id === changedItem.id);
-                if (correspondingItem1 && !isEqual(correspondingItem1, changedItem)) {
+                const correspondingItem1 = itens.find(item1 => item1.id == changedItem.id);
+                if ((correspondingItem1 && !isEqual(correspondingItem1, changedItem) || correspondingItem1?.checked)) {
                     if (correspondingItem1.title.length) {
                         modifiedItems.push({ ...changedItem, taskId: route.task.id });
                     }
@@ -114,6 +107,7 @@ const TaskScreen: React.FC = () => {
         }
 
         try {
+            console.log(modifiedItems, createdItems)
             setLoad(true)
             const { data } = await makeLocalRequest(() => Task.syncItens(modifiedItems, createdItems))
             await getTaskItens()
@@ -122,6 +116,22 @@ const TaskScreen: React.FC = () => {
         } finally {
             setLoad(false)
         }
+    }
+
+    const changeItemType = (type: "check" | "list" | "list-ol") => {
+        const selectAllEmpity = itens.map((item, index) => {
+            if (!item.title.length) return { item, index }
+            return null
+        }).filter(i => i) as { item: TaskItem; index: number; }[];
+
+        if (!selectAllEmpity.length) return
+
+        const updatedItens = [...itens];
+        for (const empity of selectAllEmpity) {
+            updatedItens[empity.index] = { ...updatedItens[empity.index], type };
+        }
+
+        setItens(updatedItens);
     }
 
     const Header = () => (
@@ -144,7 +154,13 @@ const TaskScreen: React.FC = () => {
                         </View>
                     )
                 }
-                <TaskOptions activeOption={activeOption} setActiveOption={setActiveOption} />
+                <TaskOptions
+                    activeOption={activeOption}
+                    setActiveOption={option => {
+                        setActiveOption(option)
+                        changeItemType(option)
+                    }}
+                />
             </View>
         </>
     )
