@@ -45,8 +45,8 @@ const TaskItens: React.FC<TaskItemProps> = ({ index, item, itens, setItens, text
                 placeholderTextColor='#969696'
                 style={{ color: TEXT_PRIMARY, width: "100%" }}
                 onChangeText={(text) => {
-                    const updatedItens = [...itens];  // Crie uma cópia do array de itens
-                    updatedItens[index] = { ...updatedItens[index], title: text };  // Atualize apenas o item atual
+                    const updatedItens = [...itens];
+                    updatedItens[index] = { ...updatedItens[index], title: text };
                     setItens(updatedItens);
                 }}
                 onSubmitEditing={() => {

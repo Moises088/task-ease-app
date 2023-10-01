@@ -9,13 +9,13 @@ import { ApiContext } from '../../contexts/api.context';
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from '@react-navigation/stack';
 import { defaultList } from '../../constants/task.constant';
-import styles from './styles';
-import TaskHeader from '../../components/task/header';
-import TaskOptions from '../../components/task/options';
 import { TaskItem } from '../../interfaces/screens/task.interface';
-import TaskItens from '../../components/task/item';
 import { Task } from '../../services/task.service';
 import { TaskItemEntity } from '../../database/entities/task-item.entity';
+import TaskHeader from '../../components/task/header';
+import TaskOptions from '../../components/task/options';
+import TaskItens from '../../components/task/item';
+import styles from './styles';
 
 type TaskScreenRouteProp = RouteProp<RootStackParamList, 'TaskScreen'>;
 type TaskScreenNavigationProp = StackNavigationProp<RootStackParamList, 'TaskScreen'>;
@@ -31,14 +31,32 @@ const TaskScreen: React.FC = () => {
     const [updateTimeout, setUpdateTimeout] = React.useState<NodeJS.Timeout | null>(null);
     const [load, setLoad] = React.useState<boolean>(false)
     const [itens, setItens] = React.useState<TaskItem[]>([]);
-
-    const navigation = useNavigation<TaskScreenNavigationProp>();
+    const [keyboardHeight, setKeyboardHeight] = React.useState(0);
 
     const { language, makeLocalRequest } = React.useContext(ApiContext)
 
     React.useEffect(() => {
         getTaskItens()
     }, [])
+
+    React.useEffect(() => {
+        function onKeyboardDidShow(e: any) {
+            setKeyboardHeight(e.endCoordinates.height);
+        }
+
+        function onKeyboardDidHide() {
+            setTimeout(() => {
+                setKeyboardHeight(0);
+            }, 100);
+        }
+
+        const showSubscription = Keyboard.addListener('keyboardDidShow', onKeyboardDidShow);
+        const hideSubscription = Keyboard.addListener('keyboardDidHide', onKeyboardDidHide);
+        return () => {
+            showSubscription.remove();
+            hideSubscription.remove();
+        };
+    }, []);
 
     const getTaskItens = async () => {
         try {
@@ -82,8 +100,8 @@ const TaskScreen: React.FC = () => {
     };
 
     const updateTaskItens = async (changedItens: TaskItem[]) => {
-        const modifiedItems: TaskItemEntity[] = [];
-        const createdItems: TaskItemEntity[] = [];
+        const modifiedItems: (TaskItemEntity & { index: number })[] = [];
+        const createdItems: (TaskItemEntity & { index: number })[] = [];
 
         if (!route.task.id) return
 
@@ -91,26 +109,36 @@ const TaskScreen: React.FC = () => {
             return JSON.stringify(obj1) === JSON.stringify(obj2);
         }
 
-        for (const changedItem of changedItens) {
+        for (let index = 0; index < changedItens.length; index++) {
+            const changedItem = changedItens[index];
+
             if (changedItem.id) {
                 const correspondingItem1 = itens.find(item1 => item1.id == changedItem.id);
                 if ((correspondingItem1 && !isEqual(correspondingItem1, changedItem) || correspondingItem1?.checked)) {
                     if (correspondingItem1.title.length) {
-                        modifiedItems.push({ ...changedItem, taskId: route.task.id });
+                        modifiedItems.push({ ...changedItem, taskId: route.task.id, index });
                     }
                 }
             } else {
                 if (changedItem.title.length) {
-                    createdItems.push({ ...changedItem, taskId: route.task.id });
+                    createdItems.push({ ...changedItem, taskId: route.task.id, index });
                 }
             }
         }
 
         try {
-            console.log(modifiedItems, createdItems)
+            console.log("modifiedItems", modifiedItems, "createdItems", createdItems)
             setLoad(true)
             const { data } = await makeLocalRequest(() => Task.syncItens(modifiedItems, createdItems))
-            await getTaskItens()
+
+            const modify: TaskItem[] = changedItens;
+            
+            for (const createdItem of data.created) {
+                const index = changedItens[createdItem.index];
+                if (index) index['id'] = createdItem.id;
+            }
+
+            setItens(modify)
         } catch (error) {
 
         } finally {
@@ -176,8 +204,9 @@ const TaskScreen: React.FC = () => {
                         <FlatList
                             ListHeaderComponent={Header}
                             ref={flatListRef}
-                            ListFooterComponent={<View style={{ height: 50 }} />}
+                            ListFooterComponent={<View style={{ height: 50 + keyboardHeight }} />}
                             data={itens}
+                            keyboardShouldPersistTaps="always"
                             renderItem={({ item, index }) => (
                                 <TaskItens
                                     index={index}

@@ -30,20 +30,35 @@ class TaskCls {
         return this.ensureMinimumDelay<TaskItemEntity[]>(startTime, 10, response);
     }
 
-    public async syncItens(modifiedItems: TaskItemEntity[], createdItems: TaskItemEntity[]) {
+    public async syncItens(modifiedItems: (TaskItemEntity & { index: number })[], createdItems: (TaskItemEntity & { index: number })[]) {
         const taskItemRepository = new TaskItemRepository();
-        const response = [];
+        const response: { created: (TaskItemEntity & { index: number })[], updated: number[] } = {
+            created: [],
+            updated: []
+        };
 
         for (const modifiedItem of modifiedItems) {
             if (modifiedItem.id) {
-                const updated = await taskItemRepository.update(modifiedItem.id, modifiedItem);
-                response.push(updated)
+                const updated = await taskItemRepository.update(modifiedItem.id, {
+                    checked: modifiedItem.checked,
+                    description: modifiedItem.description,
+                    taskId: modifiedItem.taskId,
+                    title: modifiedItem.title,
+                    type: modifiedItem.type,
+                });
+                if (updated?.rowsAffected) response.updated.push(updated?.rowsAffected)
             }
         }
 
         for (const createdItem of createdItems) {
-            const created = await taskItemRepository.save(createdItem)
-            response.push(created)
+            const created = await taskItemRepository.save({
+                taskId: createdItem.taskId,
+                title: createdItem.title,
+                type: createdItem.type,
+                checked: createdItem.checked,
+                description: createdItem.description,
+            })
+            response.created.push({ id: created, ...createdItem })
         }
 
         return response

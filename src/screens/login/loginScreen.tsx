@@ -27,7 +27,7 @@ const LoginScreen: React.FC = () => {
     React.useEffect(() => {
         setTimeout(() => {
             loginWithoutAccount();
-        }, 300);
+        }, 100);
     }, [])
 
     const handleGoogleLogin = () => { defaultAlert() };
