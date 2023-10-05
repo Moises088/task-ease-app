@@ -191,9 +191,11 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         const find = this.generateQueryWhere(options?.where);
         const select = options?.select?.join(",") ?? "*";
         const order = this.generateQueryOrder(options?.order);;
-        const query = `SELECT ${select} FROM ${this.tableName} ${find.where} ${order};`;
+        const limit = options?.take ? `limit ${options.take}` : "";
+        const offset = (options?.skip !== undefined && options?.skip !== null) ? `offset ${options.skip}` : "";
+        const query = `SELECT ${select} FROM ${this.tableName} ${find.where} ${order} ${limit} ${offset};`;
 
-        console.log(order)
+        console.log(query)
 
         return new Promise((resolve, reject) => {
             db.transaction(tx => {

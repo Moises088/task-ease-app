@@ -20,14 +20,32 @@ const HomeScreen: React.FC = () => {
     const isFocused = useIsFocused()
 
     const [tasks, setTasks] = React.useState<TaskEntity[]>([])
+    const [skip, setSkip] = React.useState<number>(0)
 
     React.useEffect(() => {
-        if (isFocused) getTasks()
+        if (isFocused) getTasks(0)
     }, [isFocused])
 
-    const getTasks = async () => {
-        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find({ order: { id: "DESC" } }));
-        if (findTasks?.length) setTasks(findTasks)
+    const getTasks = async (_skip: number, returnData: boolean = false) => {
+        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find({
+            order: { id: "DESC" },
+            take: 10,
+            skip: (_skip * 10)
+        }));
+
+        if (findTasks?.length) {
+            if (returnData) return findTasks;
+
+            setTasks(findTasks)
+        }
+    }
+
+    const loadMore = async () => {
+        const getTask = await getTasks(skip + 1)
+        if (!getTask) return
+        console.log(getTask)
+        setSkip(skip + 1)
+        setTasks(prev => [...prev, ...getTask])
     }
 
     return (
@@ -47,6 +65,8 @@ const HomeScreen: React.FC = () => {
                 }
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(_, index) => index.toString()}
+                onEndReached={loadMore}
+                onEndReachedThreshold={0.4}
             />
         </View >
     );

@@ -1,7 +1,9 @@
 export type FindOptions<Entity> = {
     where?: FindWhere<Entity>,
     select?: Array<keyof Entity>,
-    order?: FindOrder<Entity>
+    order?: FindOrder<Entity>,
+    take?: number,
+    skip?: number
 }
 
 export type FindOrder<Entity> = {
