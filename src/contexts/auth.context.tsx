@@ -28,12 +28,12 @@ export const AuthProvider = ({ children }: any) => {
         setIsLogged(true)
     }
 
-    const loggout = () => {
+    const logout = () => {
         setIsLogged(false)
     }
 
     return (
-        <AuthContext.Provider value={{ login, loginWithoutAccount, isLogged, loggout, load }}>
+        <AuthContext.Provider value={{ login, loginWithoutAccount, isLogged, logout, load }}>
             {children}
         </AuthContext.Provider>
     );

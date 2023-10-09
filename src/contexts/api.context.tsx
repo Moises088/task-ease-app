@@ -71,9 +71,9 @@ export const ApiProvider = ({ children }: any) => {
     }
   }
 
-  async function makeLocalStorageRequest<T>(requestFunction: () => Promise<T>): Promise<{ data: T }> {
+  async function makeLocalStorageRequest<T>(requestFunction: () => Promise<T>, showLoading: boolean = true): Promise<{ data: T }> {
     try {
-      setVisible(true)
+      setVisible(showLoading)
       const data = await requestFunction()
       setVisible(false)
       return { data };

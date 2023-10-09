@@ -23,15 +23,21 @@ const HomeScreen: React.FC = () => {
     const [skip, setSkip] = React.useState<number>(0)
 
     React.useEffect(() => {
-        if (isFocused) getTasks(0)
+        if (isFocused) {
+            getTasks(0)
+            setSkip(0)
+        }
     }, [isFocused])
 
     const getTasks = async (_skip: number, returnData: boolean = false) => {
-        const { data: findTasks } = await makeLocalStorageRequest(() => Task.find({
-            order: { id: "DESC" },
-            take: 10,
-            skip: (_skip * 10)
-        }));
+        const { data: findTasks } = await makeLocalStorageRequest(
+            () => Task.find({
+                order: { id: "DESC" },
+                take: 10,
+                skip: (_skip * 10)
+            }),
+            !returnData
+        );
 
         if (findTasks?.length) {
             if (returnData) return findTasks;
@@ -41,9 +47,9 @@ const HomeScreen: React.FC = () => {
     }
 
     const loadMore = async () => {
-        const getTask = await getTasks(skip + 1)
+        const getTask = await getTasks(skip + 1, true)
+        console.log("loadMore getTask", getTask)
         if (!getTask) return
-        console.log(getTask)
         setSkip(skip + 1)
         setTasks(prev => [...prev, ...getTask])
     }

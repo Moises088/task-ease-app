@@ -1,10 +1,34 @@
+/**
+ * Type representing find options for querying entities.
+ * @template Entity - The type of the entity being queried.
+*/
 export type FindOptions<Entity> = {
-    where?: FindWhere<Entity>,
-    select?: Array<keyof Entity>,
-    order?: FindOrder<Entity>,
-    take?: number,
-    skip?: number
-}
+    /**
+     * Conditions to filter the results.
+    */
+    where?: FindWhere<Entity>;
+
+    /**
+     * Array of properties to select from the entity.
+    */
+    select?: Array<keyof Entity>;
+
+    /**
+     * Ordering options for sorting the results.
+    */
+    order?: FindOrder<Entity>;
+
+    /**
+     * The maximum number of results to return.
+    */
+    take?: number;
+
+    /**
+     * The number of results to skip.
+    */
+    skip?: number;
+};
+
 
 export type FindOrder<Entity> = {
     [Key in keyof Entity]?: "ASC" | "DESC"
