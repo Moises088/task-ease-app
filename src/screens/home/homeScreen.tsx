@@ -48,7 +48,6 @@ const HomeScreen: React.FC = () => {
 
     const loadMore = async () => {
         const getTask = await getTasks(skip + 1, true)
-        console.log("loadMore getTask", getTask)
         if (!getTask) return
         setSkip(skip + 1)
         setTasks(prev => [...prev, ...getTask])

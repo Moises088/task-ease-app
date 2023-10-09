@@ -5,11 +5,12 @@ import { TaskItemProps } from '../../../interfaces/screens/task.interface';
 import { BUTTON_PRIMARY, TEXT_PRIMARY } from '../../../constants/colors.constant';
 import { defaultList } from '../../../constants/task.constant';
 import { FontAwesome } from '@expo/vector-icons';
+import styles from './styles';
 
 const TaskItens: React.FC<TaskItemProps> = ({ index, item, itens, setItens, textInputRefs }) => {
 
     return (
-        <View key={index} style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+        <View key={index} style={styles.container}>
             {item.type == 'check' && (
                 <BouncyCheckbox
                     isChecked={item.checked}
@@ -25,13 +26,13 @@ const TaskItens: React.FC<TaskItemProps> = ({ index, item, itens, setItens, text
             )}
 
             {item.type == 'list' && (
-                <View style={{ width: 20, height: 20, marginRight: 20, marginLeft: 8, alignItems: "center", justifyContent: "center" }}>
+                <View style={styles.containerList}>
                     <FontAwesome name="circle" size={16} color={BUTTON_PRIMARY} />
                 </View>
             )}
 
             {item.type == 'list-ol' && (
-                <Text style={{ marginRight: 20, marginLeft: 8, color: BUTTON_PRIMARY, width: 20, height: 20, textAlign: "center" }}>
+                <Text style={styles.containerListOl}>
                     {index + 1}.
                 </Text>
             )}

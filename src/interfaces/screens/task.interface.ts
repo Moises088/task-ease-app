@@ -34,12 +34,12 @@ export interface TaskItemProps {
      * Function to set the task items.
      * @param items - The updated task items.
     */
-    setItems: (items: TaskItem[]) => void;
+    setItens: (items: TaskItem[]) => void;
 
     /**
      * The list of task items.
     */
-    items: TaskItem[];
+    itens: TaskItem[];
 
     /**
      * Mutable ref for the text input associated with the task item.

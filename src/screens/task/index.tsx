@@ -66,7 +66,7 @@ const TaskScreen: React.FC = () => {
 
             setLoad(true)
             const { data: result } = await makeLocalRequest(() => Task.findItens(taskId))
-
+            
             if (!result?.length) {
                 setItens([{ ...defaultList, type: activeOption }])
                 return
@@ -132,7 +132,7 @@ const TaskScreen: React.FC = () => {
             const { data } = await makeLocalRequest(() => Task.syncItens(modifiedItems, createdItems))
 
             const modify: TaskItem[] = changedItens;
-            
+
             for (const createdItem of data.created) {
                 const index = changedItens[createdItem.index];
                 if (index) index['id'] = createdItem.id;
