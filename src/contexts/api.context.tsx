@@ -40,7 +40,7 @@ export const ApiProvider = ({ children }: any) => {
       setStatusCode(200)
       return { data, statusCode: 200 };
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       setLoading(false)
       setStatusCode(400)
       return { data: null as T, statusCode: 400 }
@@ -60,7 +60,7 @@ export const ApiProvider = ({ children }: any) => {
       setStatusCode(200)
       return { data, statusCode: 200 };
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       setLoading(false)
       setStatusCode(400)
       return { data: null as T, statusCode: 400 }
@@ -78,7 +78,7 @@ export const ApiProvider = ({ children }: any) => {
       setVisible(false)
       return { data };
     } catch (error) {
-      console.error(error)
+      // console.error(error)
       setVisible(false)
       setStatusCode(400)
       return { data: null as T }

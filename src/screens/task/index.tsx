@@ -127,7 +127,6 @@ const TaskScreen: React.FC = () => {
         }
 
         try {
-            console.log("modifiedItems", modifiedItems, "createdItems", createdItems)
             setLoad(true)
             const { data } = await makeLocalRequest(() => Task.syncItens(modifiedItems, createdItems))
 

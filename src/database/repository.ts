@@ -195,8 +195,6 @@ export class Repository<Entity> implements RepositoryInterface<Entity> {
         const offset = (options?.skip !== undefined && options?.skip !== null) ? `offset ${options.skip}` : "";
         const query = `SELECT ${select} FROM ${this.tableName} ${find.where} ${order} ${limit} ${offset};`;
 
-        console.log(query)
-
         return new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql(

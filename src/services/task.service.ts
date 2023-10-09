@@ -8,7 +8,6 @@ import { TaskItem } from "../interfaces/screens/task.interface";
 class TaskCls {
 
     public async create(task: TaskEntity) {
-        console.log("task", task)
         const startTime = Date.now();
         const taskRepository = new TaskRepository();
         const response = await taskRepository.save(task);
@@ -16,7 +15,6 @@ class TaskCls {
     }
 
     public async find(options?: FindOptions<TaskEntity>) {
-        console.log("options", options)
         const startTime = Date.now();
         const taskRepository = new TaskRepository()
         const response = await taskRepository.find(options);
